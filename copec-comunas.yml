@@ -1,0 +1,37 @@
+name: Actualizar comunas Copec
+
+# Corre todos los días a las 13:20 UTC = 09:20 en Chile (invierno, UTC-4),
+# justo después de que Copec publica el listado a las 09:00.
+# En verano chileno (UTC-3) correría 10:20, igual sirve.
+on:
+  schedule:
+    - cron: "20 13 * * *"
+  workflow_dispatch:        # permite ejecutarlo a mano desde la pestaña Actions
+
+permissions:
+  contents: write           # necesario para que el bot haga commit
+
+jobs:
+  actualizar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Generar comunas-hoy.json
+        run: python3 update_comunas.py
+
+      - name: Commit si hubo cambios
+        run: |
+          git config user.name  "comunas-bot"
+          git config user.email "actions@github.com"
+          git add comunas-hoy.json
+          if git diff --cached --quiet; then
+            echo "Sin cambios."
+          else
+            git commit -m "comunas Copec $(date -u +%F)"
+            git push
+          fi
