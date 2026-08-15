@@ -1,11 +1,12 @@
 {
-  "fecha": "2026-08-14",
+  "fecha": "2026-08-15",
   "comunas": [
     "Arica",
+    "Antofagasta",
+    "Coquimbo",
     "Santiago",
     "Las Condes",
     "Tomé",
-    "Arauco",
     "Nacimiento"
   ]
 }
